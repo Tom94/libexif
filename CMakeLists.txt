@@ -69,11 +69,11 @@ configure_file(${CMAKE_CURRENT_SOURCE_DIR}/libexif.pc.cmake ${CMAKE_CURRENT_BINA
 # Install the shared library and its header into the system (optional step, requires root credentials)
 # Relative to $<INSTALL_PREFIX>
 if (BUILD_SHARED_LIBS)
-    install(TARGETS exif_shared DESTINATION ${CMAKE_INSTALL_LIBDIR})
+    install(TARGETS exif_shared DESTINATION lib)
 endif (BUILD_SHARED_LIBS)
 if (BUILD_STATIC_LIBS)
-    install(TARGETS exif_static DESTINATION ${CMAKE_INSTALL_LIBDIR})
+    install(TARGETS exif_static DESTINATION lib)
 endif (BUILD_STATIC_LIBS)
 
-install(FILES ${libexif_HEADERS} DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/libexif/)
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/libexif.pc DESTINATION ${CMAKE_INSTALL_LIBDIR}/pkgconfig/)
+install(FILES ${libexif_HEADERS} DESTINATION include/libexif/)
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/libexif.pc DESTINATION lib/pkgconfig/)
