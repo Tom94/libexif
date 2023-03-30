@@ -1,5 +1,5 @@
 project(libexif)
-set (VERSION "0.6.24.1")
+set (VERSION "0.6.24")
 
 cmake_minimum_required(VERSION 3.0)
 
