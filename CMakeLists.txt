@@ -1,7 +1,7 @@
+cmake_minimum_required(VERSION 3.0)
+
 project(libexif)
 set (VERSION "0.6.24")
-
-cmake_minimum_required(VERSION 3.0)
 
 option(BUILD_STATIC_LIBS "Build static library" ON)
 option(BUILD_SHARED_LIBS "Build shared library" ON)
