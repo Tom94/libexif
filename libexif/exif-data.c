@@ -75,11 +75,11 @@ exif_data_alloc (ExifData *data, unsigned int i)
 {
 	void *d;
 
-	if (!data || !i) 
+	if (!data || !i)
 		return NULL;
 
 	d = exif_mem_alloc (data->priv->mem, i);
-	if (d) 
+	if (d)
 		return d;
 
 	EXIF_LOG_NO_MEMORY (data->priv->log, "ExifData", i);
@@ -109,16 +109,16 @@ exif_data_new_mem (ExifMem *mem)
 	ExifData *data;
 	unsigned int i;
 
-	if (!mem) 
+	if (!mem)
 		return NULL;
 
 	data = exif_mem_alloc (mem, sizeof (ExifData));
-	if (!data) 
+	if (!data)
 		return (NULL);
 	data->priv = exif_mem_alloc (mem, sizeof (ExifDataPrivate));
-	if (!data->priv) { 
-	  	exif_mem_free (mem, data); 
-		return (NULL); 
+	if (!data->priv) {
+	  	exif_mem_free (mem, data);
+		return (NULL);
 	}
 	data->priv->ref_count = 1;
 
@@ -171,14 +171,14 @@ exif_data_load_data_entry (ExifData *data, ExifEntry *entry,
 	entry->format     = exif_get_short (d + offset + 2, data->priv->order);
 	entry->components = exif_get_long  (d + offset + 4, data->priv->order);
 
-	/* FIXME: should use exif_tag_get_name_in_ifd here but entry->parent 
+	/* FIXME: should use exif_tag_get_name_in_ifd here but entry->parent
 	 * has not been set yet
 	 */
 	exif_log (data->priv->log, EXIF_LOG_CODE_DEBUG, "ExifData",
 		  "Loading entry 0x%x ('%s')...", entry->tag,
 		  exif_tag_get_name (entry->tag));
 
-	/* {0,1,2,4,8} x { 0x00000000 .. 0xffffffff } 
+	/* {0,1,2,4,8} x { 0x00000000 .. 0xffffffff }
 	 *   -> { 0x000000000 .. 0x7fffffff8 } */
 	s = exif_format_get_size(entry->format) * entry->components;
 	if ((s < entry->components) || (s == 0)){
@@ -220,7 +220,7 @@ exif_data_load_data_entry (ExifData *data, ExifEntry *entry,
 	if (entry->tag == EXIF_TAG_MAKER_NOTE) {
 		if (!entry->data) {
 			exif_log (data->priv->log, EXIF_LOG_CODE_DEBUG, "ExifData",
-					  "MakerNote found with empty data");	
+					  "MakerNote found with empty data");
 		} else if (entry->size > 6) {
 			exif_log (data->priv->log,
 					       EXIF_LOG_CODE_DEBUG, "ExifData",
@@ -243,7 +243,7 @@ exif_data_save_data_entry (ExifData *data, ExifEntry *e,
 	unsigned int doff, s;
 	unsigned int ts;
 
-	if (!data || !data->priv) 
+	if (!data || !data->priv)
 		return;
 
 	/*
@@ -302,7 +302,7 @@ exif_data_save_data_entry (ExifData *data, ExifEntry *e,
 		*d = t;
 		*ds = ts;
 		exif_set_long (*d + 6 + offset + 8, data->priv->order, doff);
-		if (s & 1) 
+		if (s & 1)
 			*(*d + *ds - 1) = '\0';
 
 	} else
@@ -317,7 +317,7 @@ exif_data_save_data_entry (ExifData *data, ExifEntry *e,
 	} else {
 		memset (*d + 6 + doff, 0, s);
 	}
-	if (s < 4) 
+	if (s < 4)
 		memset (*d + 6 + doff + s, 0, (4 - s));
 }
 
@@ -334,7 +334,7 @@ exif_data_load_data_thumbnail (ExifData *data, const unsigned char *d,
 		exif_log (data->priv->log, EXIF_LOG_CODE_DEBUG, "ExifData", "Bogus thumbnail size (%u), max would be %u.", s, ds-o);
 		return;
 	}
-	if (data->data) 
+	if (data->data)
 		exif_mem_free (data->priv->mem, data->data);
 	if (!(data->data = exif_data_alloc (data, s))) {
 		EXIF_LOG_NO_MEMORY (data->priv->log, "ExifData", s);
@@ -398,7 +398,7 @@ exif_data_load_data_content (ExifData *data, ExifIfd ifd,
 	unsigned int i;
 	ExifTag tag;
 
-	if (!data || !data->priv) 
+	if (!data || !data->priv)
 		return;
 
 	/* check for valid ExifIfd enum range */
@@ -499,7 +499,7 @@ exif_data_load_data_content (ExifData *data, ExifIfd ifd,
 		default:
 
 			/*
-			 * If we don't know the tag, don't fail. It could be that new 
+			 * If we don't know the tag, don't fail. It could be that new
 			 * versions of the standard have defined additional tags. Note that
 			 * 0 is a valid tag in the GPS IFD.
 			 */
@@ -511,7 +511,7 @@ exif_data_load_data_content (ExifData *data, ExifIfd ifd,
 				 */
 				if (!memcmp (d + offset + 12 * i, "\0\0\0\0", 4)) {
 					exif_log (data->priv->log, EXIF_LOG_CODE_DEBUG, "ExifData",
-						  "Skipping empty entry at position %u in '%s'.", i, 
+						  "Skipping empty entry at position %u in '%s'.", i,
 						  exif_ifd_get_name (ifd));
 					break;
 				}
@@ -570,7 +570,7 @@ exif_data_save_data_content (ExifData *data, ExifContent *ifd,
 	unsigned char *t;
 	unsigned int ts;
 
-	if (!data || !data->priv || !ifd || !d || !ds) 
+	if (!data || !data->priv || !ifd || !d || !ds)
 		return;
 
 	for (i = 0; i < EXIF_IFD_COUNT; i++)
@@ -795,7 +795,7 @@ interpret_maker_note(ExifData *data, const unsigned char *d, unsigned int ds)
 	ExifEntry* e = exif_data_get_entry (data, EXIF_TAG_MAKER_NOTE);
 	if (!e)
 		return;
-	
+
 	if ((mnoteid = exif_mnote_data_olympus_identify (data, e)) != 0) {
 		exif_log (data->priv->log, EXIF_LOG_CODE_DEBUG,
 			"ExifData", "Olympus MakerNote variant type %d", mnoteid);
@@ -826,7 +826,7 @@ interpret_maker_note(ExifData *data, const unsigned char *d, unsigned int ds)
 	}
 */
 
-	/* 
+	/*
 	 * If we are able to interpret the maker note, do so.
 	 */
 	if (data->priv->md) {
@@ -965,9 +965,10 @@ exif_data_load_data (ExifData *data, const unsigned char *d_orig,
 	/* The JPEG APP1 section can be no longer than 64 KiB (including a
 	   16-bit length), so cap the data length to protect against overflow
 	   in future offset calculations */
+    // HACK: to read TIFF files as exif files, we need to allow larger sizes
 	fullds = ds;
-	if (ds > 0xfffe)
-		ds = 0xfffe;
+	// if (ds > 0xfffe)
+	// 	ds = 0xfffe;
 
 	/* Byte order (offset 6, length 2) */
 	if (!memcmp (d + 6, "II", 2))
@@ -986,7 +987,7 @@ exif_data_load_data (ExifData *data, const unsigned char *d_orig,
 
 	/* IFD 0 offset */
 	offset = exif_get_long (d + 10, data->priv->order);
-	exif_log (data->priv->log, EXIF_LOG_CODE_DEBUG, "ExifData", 
+	exif_log (data->priv->log, EXIF_LOG_CODE_DEBUG, "ExifData",
 		  "IFD 0 at %i.", (int) offset);
 
 	/* ds is restricted to 16 bit above, so offset is restricted too, and offset+8 should not overflow. */
@@ -1100,11 +1101,11 @@ exif_data_ref (ExifData *data)
 void
 exif_data_unref (ExifData *data)
 {
-	if (!data) 
+	if (!data)
 		return;
 
 	data->priv->ref_count--;
-	if (!data->priv->ref_count) 
+	if (!data->priv->ref_count)
 		exif_data_free (data);
 }
 
@@ -1114,7 +1115,7 @@ exif_data_free (ExifData *data)
 	unsigned int i;
 	ExifMem *mem = (data && data->priv) ? data->priv->mem : NULL;
 
-	if (!data) 
+	if (!data)
 		return;
 
 	for (i = 0; i < EXIF_IFD_COUNT; i++) {
@@ -1237,7 +1238,7 @@ exif_data_log (ExifData *data, ExifLog *log)
 {
 	unsigned int i;
 
-	if (!data || !data->priv) 
+	if (!data || !data->priv)
 		return;
 	exif_log_unref (data->priv->log);
 	data->priv->log = log;
@@ -1252,7 +1253,7 @@ ExifLog *exif_data_get_log (ExifData *);
 ExifLog *
 exif_data_get_log (ExifData *data)
 {
-	if (!data || !data->priv) 
+	if (!data || !data->priv)
 		return NULL;
 	return data->priv->log;
 }
@@ -1279,7 +1280,7 @@ exif_data_option_get_name (ExifDataOption o)
 	unsigned int i;
 
 	for (i = 0; exif_data_option[i].name; i++)
-		if (exif_data_option[i].option == o) 
+		if (exif_data_option[i].option == o)
 			break;
 	return _(exif_data_option[i].name);
 }
@@ -1290,7 +1291,7 @@ exif_data_option_get_description (ExifDataOption o)
 	unsigned int i;
 
 	for (i = 0; exif_data_option[i].description; i++)
-		if (exif_data_option[i].option == o) 
+		if (exif_data_option[i].option == o)
 			break;
 	return _(exif_data_option[i].description);
 }
@@ -1298,7 +1299,7 @@ exif_data_option_get_description (ExifDataOption o)
 void
 exif_data_set_option (ExifData *d, ExifDataOption o)
 {
-	if (!d) 
+	if (!d)
 		return;
 
 	d->priv->options |= o;
@@ -1307,7 +1308,7 @@ exif_data_set_option (ExifData *d, ExifDataOption o)
 void
 exif_data_unset_option (ExifData *d, ExifDataOption o)
 {
-	if (!d) 
+	if (!d)
 		return;
 
 	d->priv->options &= ~o;
@@ -1350,7 +1351,7 @@ exif_data_fix (ExifData *d)
 void
 exif_data_set_data_type (ExifData *d, ExifDataType dt)
 {
-	if (!d || !d->priv) 
+	if (!d || !d->priv)
 		return;
 
 	d->priv->data_type = dt;
